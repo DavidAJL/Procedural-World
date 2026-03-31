@@ -1,0 +1,17 @@
+{
+  "OutputFoldersPerTargetSystem": {
+    "Local Machine": [
+      "out\\build\\x64-Debug",
+      "out\\install\\x64-Debug"
+    ]
+  },
+  "ExpandedNodes": [
+    "",
+    "\\external",
+    "\\external\\glew",
+    "\\external\\sdl2",
+    "\\project"
+  ],
+  "SelectedNode": "\\external\\sdl2",
+  "PreviewInSolutionExplorer": false
+}
