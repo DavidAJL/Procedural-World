@@ -346,7 +346,7 @@ bool handleEvents(void)
 
 	if (state[SDL_SCANCODE_LSHIFT])
 	{
-		cameraSpeed = 40.f;
+		cameraSpeed = 150.f;
 	} else {
 		cameraSpeed = 10.f;
 	}
