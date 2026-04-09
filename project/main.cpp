@@ -47,7 +47,7 @@ GLuint backgroundProgram;
 // Environment
 ///////////////////////////////////////////////////////////////////////////////
 float environment_multiplier = 1.5f;
-GLuint environmentMap;
+GLuint environmentMap, irradianceMap, reflectionMap;
 const std::string envmap_base_name = "001";
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -129,7 +129,14 @@ void initialize()
 	///////////////////////////////////////////////////////////////////////
 	// Load environment map
 	///////////////////////////////////////////////////////////////////////
+	const int roughnesses = 8;
+	std::vector<std::string> filenames;
+	for (int i = 0; i < roughnesses; i++)
+		filenames.push_back("../scenes/envmaps/" + envmap_base_name + "_dl_" + std::to_string(i) + ".hdr");
+
 	environmentMap = labhelper::loadHdrTexture("../scenes/envmaps/" + envmap_base_name + ".hdr");
+	irradianceMap = labhelper::loadHdrTexture("../scenes/envmaps/" + envmap_base_name + "_irradiance.hdr");
+	reflectionMap = labhelper::loadHdrMipmapTexture(filenames);
 
 
 	glEnable(GL_DEPTH_TEST); // enable Z-buffering
@@ -144,6 +151,7 @@ void debugDrawLight(const glm::mat4& viewMatrix,
 	glUseProgram(shaderProgram);
 	labhelper::setUniformSlow(shaderProgram, "modelViewProjectionMatrix",
 	                          projectionMatrix * viewMatrix * modelMatrix);
+	//labhelper::setUniformSlow(simpleShaderProgram, "material_color", vec3(1, 1, 1));
 	labhelper::render(sphereModel);
 }
 
@@ -176,6 +184,11 @@ void drawScene(GLuint currentShaderProgram,
 	labhelper::setUniformSlow(currentShaderProgram, "viewSpaceLightPosition", vec3(viewSpaceLightPosition));
 	labhelper::setUniformSlow(currentShaderProgram, "viewSpaceLightDir",
 	                          normalize(vec3(viewMatrix * vec4(-lightPosition, 0.0f))));
+	labhelper::setUniformSlow(currentShaderProgram, "spotOuterAngle", std::cos(radians(52.f)));
+
+	labhelper::setUniformSlow(currentShaderProgram, "useSpotLight", true);
+	labhelper::setUniformSlow(currentShaderProgram, "useSoftFalloff", true);
+	labhelper::setUniformSlow(currentShaderProgram, "spotInnerAngle", std::cos(radians(40.f)));
 
 
 	// Environment
@@ -241,6 +254,10 @@ void display(void)
 	///////////////////////////////////////////////////////////////////////////
 	glActiveTexture(GL_TEXTURE6);
 	glBindTexture(GL_TEXTURE_2D, environmentMap);
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_2D, irradianceMap);
+	glActiveTexture(GL_TEXTURE8);
+	glBindTexture(GL_TEXTURE_2D, reflectionMap);
 	glActiveTexture(GL_TEXTURE0);
 
 
