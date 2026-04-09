@@ -327,6 +327,13 @@ bool handleEvents(void)
 	const uint8_t* state = SDL_GetKeyboardState(nullptr);
 	vec3 cameraRight = cross(cameraDirection, worldUp);
 
+	if (state[SDL_SCANCODE_LSHIFT])
+	{
+		cameraSpeed = 40.f;
+	} else {
+		cameraSpeed = 10.f;
+	}
+
 	if(state[SDL_SCANCODE_W])
 	{
 		cameraPosition += cameraSpeed * deltaTime * cameraDirection;
